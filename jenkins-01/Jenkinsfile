@@ -9,9 +9,9 @@ pipeline {
         checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github', url: 'https://github.com/mpndevops10/DevOps.git']])
       }
     }
-    stage('2-cd into jenkins-01 directory'){
+    stage('2-cd into jenkins-01 and MavenEnterpriseApp-web directory'){
       steps{
-        sh 'cd jenkins-01'
+        sh 'cd jenkins-01/MavenEnterpriseApp-web'
       }
     }
     stage('3-cleanws'){
@@ -34,10 +34,10 @@ pipeline {
     }
     stage('5-deploy-to-tomcat') {
     steps {
-        withEnv(['WAR_FILE_PATH=~/workspace/maven-build/MavenEnterpriseApp-web/target/MavenEnterpriseApplication.war']) {
+        withEnv(['WAR_FILE_PATH=~/workspace/maven-build/jenkins-01/MavenEnterpriseApp-web/target/MavenEnterpriseApplication.war']) {
             sshagent(['tomcat']) {
                 sh """
-                scp -o StrictHostKeyChecking=no ${WAR_FILE_PATH} ubuntu@3.21.102.135:/opt/tomcat/apache-tomcat-9.0.88/webapps
+                scp -o StrictHostKeyChecking=no ${WAR_FILE_PATH} ubuntu@3.21.102.135:/opt/tomcat/apache-tomcat-9.0.93/webapps
                 """
             }
         }
